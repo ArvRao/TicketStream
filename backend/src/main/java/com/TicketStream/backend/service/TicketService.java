@@ -45,12 +45,13 @@ public class TicketService {
 
         // Save the ticket to the database
         ticketRepository.save(ticket);
-
+        // Send the ticket to Kafka topic
         // Serialize the ticket object to JSON string
         try {
             String ticketJson = objectMapper.writeValueAsString(ticket);
             String topic = determineTopic(ticket.getCategory());
-            kafkaTemplate.send(topic, ticketJson); // Send JSON string to Kafka
+            System.out.println("topic: " + topic);
+            kafkaTemplate.send("task-status-updated-topic", ticketJson); // Send JSON string to Kafka
         } catch (Exception e) {
             e.printStackTrace(); // Handle exceptions appropriately
         }
