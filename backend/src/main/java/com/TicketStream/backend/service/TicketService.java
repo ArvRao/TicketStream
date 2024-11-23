@@ -6,12 +6,14 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+// import javax.validation.Valid;
+import java.util.List;
+
 import com.TicketStream.backend.model.Ticket;
 import com.TicketStream.backend.repository.TicketRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.validation.Valid;
-
-import java.util.List;
 
 @Service
 public class TicketService {
@@ -20,10 +22,17 @@ public class TicketService {
     private TicketRepository ticketRepository;
 
     @Autowired
-    private KafkaTemplate<String, Ticket> kafkaTemplate;
+    private KafkaTemplate<String, String> kafkaTemplate; // Change to String for JSON serialization
 
     @Autowired
     private JavaMailSender mailSender;
+
+    private final ObjectMapper objectMapper;
+
+    @Autowired
+    public TicketService() {
+        this.objectMapper = new ObjectMapper(); // Initialize ObjectMapper
+    }
 
     public void processTicket(@Valid Ticket ticket) {
         // Set priority based on category
@@ -37,9 +46,14 @@ public class TicketService {
         // Save the ticket to the database
         ticketRepository.save(ticket);
 
-        // Send the ticket to the appropriate Kafka topic based on category
-        String topic = determineTopic(ticket.getCategory());
-        kafkaTemplate.send(topic, ticket);
+        // Serialize the ticket object to JSON string
+        try {
+            String ticketJson = objectMapper.writeValueAsString(ticket);
+            String topic = determineTopic(ticket.getCategory());
+            kafkaTemplate.send(topic, ticketJson); // Send JSON string to Kafka
+        } catch (Exception e) {
+            e.printStackTrace(); // Handle exceptions appropriately
+        }
 
         // Notify user asynchronously after sending to Kafka
         notifyUser(ticket);
@@ -53,7 +67,6 @@ public class TicketService {
                 return "network-issue-tickets";
             case "feature request":
                 return "feature-request-tickets";
-            // Add more cases as needed for other categories
             default:
                 return "normal-tickets"; // Fallback topic for unrecognized categories
         }
@@ -67,8 +80,8 @@ public class TicketService {
                         "\nTitle: " + ticket.getTitle() + 
                         "\nCategory: " + ticket.getCategory() +
                         "\nPriority: " + ticket.getPriority());
-        
-        mailSender.send(message);
+        System.out.println("Ticket:" + " title: " + ticket.getTitle() + " description: " + ticket.getDescription());
+        // mailSender.send(message);
     }
 
     // Method to retrieve a ticket by ID

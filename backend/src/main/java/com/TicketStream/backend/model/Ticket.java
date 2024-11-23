@@ -8,6 +8,10 @@ import jakarta.validation.constraints.Size;
 @Table(name = "tickets") // Optional: specify the table name if different from class name
 public class Ticket {
 
+    public Ticket() {
+        // Default constructor
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,14 +23,13 @@ public class Ticket {
     @Size(min = 200, message = "Critical tickets must have at least 200 characters in description.")
     private String description;
 
-    @NotBlank(message = "Email is required")
-    private String email;
-
     @NotBlank(message = "Category is required")
     private String category;
 
-    @NotBlank(message = "Priority is required")
-    private String priority;
+    private String priority; // This can be set internally based on category
+
+    @NotBlank(message = "Email is required")
+    private String email;
 
     // Getters and Setters
 
