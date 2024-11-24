@@ -37,7 +37,6 @@ public class TicketService {
     public void processTicket(@Valid Ticket ticket) {
         // Set priority based on category
         ticket.markProcessing();
-        // Ticket.setStatus("Under Review");
 
         if (validateTicket(ticket)) {
             ticket.markUnderReview();
@@ -56,7 +55,7 @@ public class TicketService {
                 String ticketJson = objectMapper.writeValueAsString(ticket);
                 String topic = determineTopic(ticket.getCategory());
                 System.out.println("topic: " + topic);
-                kafkaTemplate.send("task-status-updated-topic", ticketJson); // Send JSON string to Kafka
+                kafkaTemplate.send(topic, ticketJson); // Send JSON string to Kafka
             } catch (Exception e) {
                 e.printStackTrace(); // Handle exceptions appropriately
             }
@@ -82,10 +81,10 @@ public class TicketService {
 
     private String determineTopic(String category) {
         switch (category.toLowerCase()) {
+            case "network issue":
+                return "network-issues-tickets";
             case "system outage":
                 return "system-outage-tickets";
-            case "network issue":
-                return "network-issue-tickets";
             case "feature request":
                 return "feature-request-tickets";
             default:
