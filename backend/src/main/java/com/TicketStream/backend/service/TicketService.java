@@ -36,30 +36,40 @@ public class TicketService {
 
     public void processTicket(@Valid Ticket ticket) {
         // Set priority based on category
+        ticket.markProcessing();
+        // Ticket.setStatus("Under Review");
+
         if (validateTicket(ticket)) {
-            if ("network issue".equalsIgnoreCase(ticket.getCategory()) || 
-                "system outage".equalsIgnoreCase(ticket.getCategory())) {
+            ticket.markUnderReview();
+            if ("network issue".equalsIgnoreCase(ticket.getCategory()) ||
+                    "system outage".equalsIgnoreCase(ticket.getCategory())) {
                 ticket.setPriority("HIGH");
             } else {
                 ticket.setPriority("NORMAL");
             }
 
-        // Save the ticket to the database
-        ticketRepository.save(ticket);
-        // Send the ticket to Kafka topic
-        // Serialize the ticket object to JSON string
-        try {
-            String ticketJson = objectMapper.writeValueAsString(ticket);
-            String topic = determineTopic(ticket.getCategory());
-            System.out.println("topic: " + topic);
-            kafkaTemplate.send("task-status-updated-topic", ticketJson); // Send JSON string to Kafka
-        } catch (Exception e) {
-            e.printStackTrace(); // Handle exceptions appropriately
+            // Save the ticket to the database
+            ticketRepository.save(ticket);
+            // Send the ticket to Kafka topic
+            // Serialize the ticket object to JSON string
+            try {
+                String ticketJson = objectMapper.writeValueAsString(ticket);
+                String topic = determineTopic(ticket.getCategory());
+                System.out.println("topic: " + topic);
+                kafkaTemplate.send("task-status-updated-topic", ticketJson); // Send JSON string to Kafka
+            } catch (Exception e) {
+                e.printStackTrace(); // Handle exceptions appropriately
+            }
+        } else {
+            ticket.markRejected();
+            throw new IllegalArgumentException("Invalid ticket");
         }
-    }
 
-        // Notify user asynchronously after sending to Kafka
+        System.out.println("Ticket after validation before sending out notifications:" + ticket);
+
+        // Notify user asynchronously after sending to Kafka, should we call here?
         notifyUser(ticket);
+        // taskService.updateTaskStatus(task); 
     }
     
     private boolean validateTicket(Ticket ticket) {
