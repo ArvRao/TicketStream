@@ -22,7 +22,7 @@ public class TicketController {
     @PostMapping("/submit")
     public ResponseEntity<String> submitTicket(@Validated @RequestBody Ticket ticket) {
         ticketService.processTicket(ticket);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Ticket has been submitted successfully!" + " Id:" + ticket.getId());
+        return ResponseEntity.status(HttpStatus.CREATED).body("Ticket has been submitted successfully!" + " Id:" + ticket.getUuid());
     }
 
     // Endpoint to retrieve a ticket by ID

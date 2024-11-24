@@ -13,11 +13,12 @@ public class NotificationService {
     private KafkaTemplate<String, String> kafkaTemplate; // For sending notifications
 
     public void notifyUser(Ticket ticket) {
-        String notificationMessage = "Your system outage ticket has been resolved: " + ticket.getTitle();
+        // String notificationMessage = "Your ticket has been resolved: " + ticket.getTitle() + " Id: " + ticket.getUuid();
+        String statusUpdateMessage = String.format("Ticket %s has been resolved.", ticket.getUuid());
         
         // Send notification message to a Kafka topic for notifications
-        kafkaTemplate.send("user-notifications", notificationMessage);
+        kafkaTemplate.send("user-notifications", statusUpdateMessage);
         
-        System.out.println("Notification sent: " + notificationMessage);
+        System.out.println("Notification sent: " + statusUpdateMessage);
     }
 }

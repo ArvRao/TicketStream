@@ -67,7 +67,6 @@ public class TicketService {
         System.out.println("Ticket after validation before sending out notifications:" + ticket);
 
         // Notify user asynchronously after sending to Kafka, should we call here?
-        notifyUser(ticket);
         // taskService.updateTaskStatus(task); 
     }
     

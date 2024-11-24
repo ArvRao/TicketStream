@@ -46,6 +46,10 @@ public class Ticket {
         return id;
     }
 
+    public String getUuid() {
+        return uuid;
+    }
+    
     public String getTitle() {
         return title;
     }
