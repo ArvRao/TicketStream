@@ -36,12 +36,13 @@ public class TicketService {
 
     public void processTicket(@Valid Ticket ticket) {
         // Set priority based on category
-        if ("network issue".equalsIgnoreCase(ticket.getCategory()) || 
-            "system outage".equalsIgnoreCase(ticket.getCategory())) {
-            ticket.setPriority("HIGH");
-        } else {
-            ticket.setPriority("NORMAL");
-        }
+        if (validateTicket(ticket)) {
+            if ("network issue".equalsIgnoreCase(ticket.getCategory()) || 
+                "system outage".equalsIgnoreCase(ticket.getCategory())) {
+                ticket.setPriority("HIGH");
+            } else {
+                ticket.setPriority("NORMAL");
+            }
 
         // Save the ticket to the database
         ticketRepository.save(ticket);
@@ -55,9 +56,18 @@ public class TicketService {
         } catch (Exception e) {
             e.printStackTrace(); // Handle exceptions appropriately
         }
+    }
 
         // Notify user asynchronously after sending to Kafka
         notifyUser(ticket);
+    }
+    
+    private boolean validateTicket(Ticket ticket) {
+        // Implement your validation logic here
+        return ticket.getTitle() != null && !ticket.getTitle().isEmpty() &&
+               ticket.getDescription() != null && !ticket.getDescription().isEmpty() &&
+               ticket.getCategory() != null && !ticket.getCategory().isEmpty() &&
+               ticket.getEmail() != null && !ticket.getEmail().isEmpty();
     }
 
     private String determineTopic(String category) {
