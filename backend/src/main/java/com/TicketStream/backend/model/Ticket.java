@@ -42,8 +42,8 @@ public class Ticket {
 
     // Getters and Setters
 
-    public String getId() {
-        return uuid;
+    public Long getId() {
+        return id;
     }
 
     public String getTitle() {
