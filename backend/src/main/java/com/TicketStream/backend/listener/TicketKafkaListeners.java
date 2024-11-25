@@ -57,6 +57,7 @@ public class TicketKafkaListeners {
             System.out.println("Came to network issues kafka topic listener");
             Ticket ticket = objectMapper.readValue(message, Ticket.class);
             System.out.println("Processing network issue ticket: " + ticket);
+            String statusUpdateMessage = String.format("Ticket %s has been resolved.", ticket.getUuid());
             pauseConsumer(consumer); // Pause processing for other messages
             try {
                 networkIssueService.handleNetworkIssue(ticket);

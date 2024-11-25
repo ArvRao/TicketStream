@@ -24,9 +24,6 @@ public class TicketService {
     @Autowired
     private KafkaTemplate<String, String> kafkaTemplate; // Change to String for JSON serialization
 
-    @Autowired
-    private JavaMailSender mailSender;
-
     private final ObjectMapper objectMapper;
 
     @Autowired
@@ -54,7 +51,7 @@ public class TicketService {
             try {
                 String ticketJson = objectMapper.writeValueAsString(ticket);
                 String topic = determineTopic(ticket.getCategory());
-                System.out.println("topic: " + topic);
+                System.out.println("ticketJson: " + ticketJson);
                 kafkaTemplate.send(topic, ticketJson); // Send JSON string to Kafka
             } catch (Exception e) {
                 e.printStackTrace(); // Handle exceptions appropriately
@@ -89,18 +86,6 @@ public class TicketService {
             default:
                 return "normal-tickets"; // Fallback topic for unrecognized categories
         }
-    }
-
-    private void notifyUser(Ticket ticket) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(ticket.getEmail());
-        message.setSubject("Ticket Submitted Successfully");
-        message.setText("Your ticket has been submitted with ID: " + ticket.getId() + 
-                        "\nTitle: " + ticket.getTitle() + 
-                        "\nCategory: " + ticket.getCategory() +
-                        "\nPriority: " + ticket.getPriority());
-        System.out.println("Ticket:" + " title: " + ticket.getTitle() + " description: " + ticket.getDescription());
-        // mailSender.send(message);
     }
 
     // Method to retrieve a ticket by ID

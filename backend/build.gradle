@@ -26,6 +26,7 @@ dependencies {
      implementation 'jakarta.validation:jakarta.validation-api:3.0.2' // Use Jakarta validation API
     implementation 'org.hibernate.validator:hibernate-validator:8.0.1.Final' // Hibernate Validator
     implementation 'org.springframework.boot:spring-boot-starter-mail' // Email sending
+	implementation 'com.sendgrid:sendgrid-java:4.10.1'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
