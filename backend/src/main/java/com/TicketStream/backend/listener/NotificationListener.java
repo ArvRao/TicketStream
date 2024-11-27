@@ -22,9 +22,6 @@ public class NotificationListener {
 
     @KafkaListener(topics = "user-notifications", groupId = "notification-group")
     public void listenNotifications(String message) {
-        // Logic to send an email or real-time notification to the user
-        // String userEmail = extractUserEmailFromMessage(message); 
-        // Send email notification to the user
         sendEmail("pentex518@gmail.com", "Ticket Status Update", message);
         
     }
@@ -34,7 +31,6 @@ public class NotificationListener {
         Email to = new Email(toEmail);
         Content content = new Content("text/plain", body);
         Mail mail = new Mail(from, subject, to, content);
-
         SendGrid sg = new SendGrid(sendGridApiKey);
         Request request = new Request();
 
