@@ -1,25 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import TicketForm from './components/TicketForm';
+import TicketList from './components/TicketList';
+import { Container, Button, Typography } from '@mui/material';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+const App = () => {
+    const [tickets, setTickets] = useState([]);
+    const [showTickets, setShowTickets] = useState(false);
+
+    const handleTicketSubmit = (ticketData) => {
+        // Here you would typically send the ticketData to your backend API
+        // For now, we will just add it to the local state
+        setTickets([...tickets, ticketData]);
+    };
+
+    const toggleShowTickets = () => {
+        setShowTickets(!showTickets);
+    };
+
+    return (
+        <Container maxWidth="sm">
+            <Typography variant="h3" align="center" gutterBottom>
+                Ticket Management System
+            </Typography>
+            <TicketForm onSubmit={handleTicketSubmit} />
+            <Button 
+                variant="outlined" 
+                color="primary" 
+                onClick={toggleShowTickets} 
+                fullWidth
+            >
+                {showTickets ? 'Hide Previous Tickets' : 'Show Previous Tickets'}
+            </Button>
+            {showTickets && <TicketList tickets={tickets} />}
+        </Container>
+    );
+};
 
 export default App;
