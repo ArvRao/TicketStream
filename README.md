@@ -1,18 +1,10 @@
 Application built using event driven architecture with Kafka which publishes events and ensures state management and consistency.
 
 ---
-### Event Driven Architecture
-Software architecture pattern that revolves around the production, detection, and reaction to events in a system. An event in this context is any significant change in the state of the system, or an occurrence that may trigger some action or process.
-The architecture typically consists of three main components:
-1. Event Producers: These are components or services that generate events. For example, when a user places an order on an e-commerce site, an event is generated to signify the new order.
-2. Event Channels: These are the communication paths that transport events from producers to consumers. These can be message brokers, queues, or streams (such as Kafka, RabbitMQ, or AWS SNS).
-3. Event Consumers: These are services or components that listen to events and take action based on them. For example, an inventory management system could listen for new order events and update the stock levels accordingly.
+### High Level Architecture Diagram
+![image](https://github.com/user-attachments/assets/c6447235-bebb-4d30-b79d-d1041cd452d8)
 
-This kind of architecture helps in:
-1. Decoupling different components or services unlike traditional request-response architecture
-2. Asynchronous communication between services as services can operate independently
-3. Real-time event processing
-4. Scalability of the overall application
+---
 
 ## Project Setup
 > Make sure to have docker installed on your machine
@@ -53,7 +45,27 @@ Verify if API Key is correctly set:
 `echo $SENDGRID_API_KEY`
 
 ---
+### Features
+1. Real time notifications and updates to users after their ticket is resolved
+2. Update sent to admins whenever tickets take too long to get processed
+3. Tickets sent and processed by different teams depending on the category through a Kafka stream
+---
+### Event Driven Architecture
+Software architecture pattern that revolves around the production, detection, and reaction to events in a system. An event in this context is any significant change in the state of the system, or an occurrence that may trigger some action or process.
+The architecture typically consists of three main components:
+1. Event Producers: These are components or services that generate events. For example, when a user places an order on an e-commerce site, an event is generated to signify the new order.
+2. Event Channels: These are the communication paths that transport events from producers to consumers. These can be message brokers, queues, or streams (such as Kafka, RabbitMQ, or AWS SNS).
+3. Event Consumers: These are services or components that listen to events and take action based on them. For example, an inventory management system could listen for new order events and update the stock levels accordingly.
+
+This kind of architecture helps in:
+1. Decoupling different components or services unlike traditional request-response architecture
+2. Asynchronous communication between services as services can operate independently
+3. Real-time event processing
+4. Scalability of the overall application
+
+---
 ### Helpful Commands:
 1. Clean build for gradle
 
 `./gradlew clean build`
+
