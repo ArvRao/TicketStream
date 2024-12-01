@@ -1,7 +1,7 @@
 Application built using event driven architecture with Kafka which publishes events and ensures state management and consistency.
 
 ---
-### High Level Architecture Diagram
+### Sequence Diagram
 ![image](https://github.com/user-attachments/assets/c6447235-bebb-4d30-b79d-d1041cd452d8)
 
 ---
@@ -49,6 +49,7 @@ Verify if API Key is correctly set:
 1. Real time notifications and updates to users after their ticket is resolved
 2. Update sent to admins whenever tickets take too long to get processed
 3. Tickets sent and processed by different teams depending on the category through a Kafka stream
+4. Rate limiting added by single IP within time period of 60 minutes
 ---
 ### Event Driven Architecture
 Software architecture pattern that revolves around the production, detection, and reaction to events in a system. An event in this context is any significant change in the state of the system, or an occurrence that may trigger some action or process.
