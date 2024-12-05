@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     TextField,
     Button,
@@ -6,6 +6,7 @@ import {
     Typography,
     Paper,
     Box,
+    Snackbar
 } from '@mui/material';
 
 const TicketForm = ({ onSubmit }) => {
@@ -15,7 +16,9 @@ const TicketForm = ({ onSubmit }) => {
     const [email, setEmail] = useState('');
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [touchedEmail, setTouchedEmail] = useState(false); // Track if the email field has been touched
+    const [alertMessage, setAlertMessage] = useState('');
+    const [alertVisible, setAlertVisible] = useState(false);
+    const [touchedEmail, setTouchedEmail] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -39,6 +42,11 @@ const TicketForm = ({ onSubmit }) => {
                 throw new Error('Network response was not ok');
             }
 
+            // Get the response message
+            const data = await response.json(); // Expecting a JSON object here
+            setAlertMessage(data.message); // Assuming your backend returns a message field
+            setAlertVisible(true); // Show alert notification
+
             // Optionally call onSubmit to update local state or perform other actions
             onSubmit(ticketData);
 
@@ -55,6 +63,16 @@ const TicketForm = ({ onSubmit }) => {
             setLoading(false);
         }
     };
+
+    // Effect to hide the alert after 5 seconds
+    useEffect(() => {
+        if (alertVisible) {
+            const timer = setTimeout(() => {
+                setAlertVisible(false);
+            }, 5000);
+            return () => clearTimeout(timer); // Cleanup timer on unmount or when alert is hidden
+        }
+    }, [alertVisible]);
 
     // Email validation logic
     const isValidEmail = (email) => /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email);
@@ -123,6 +141,15 @@ const TicketForm = ({ onSubmit }) => {
                     </Button>
                 </Box>
             </form>
+
+            {/* Snackbar for alert notification */}
+            <Snackbar 
+                open={alertVisible} 
+                autoHideDuration={5000} 
+                onClose={() => setAlertVisible(false)}
+                message={alertMessage}
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            />
         </Paper>
     );
 };

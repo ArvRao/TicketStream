@@ -22,7 +22,14 @@ public class NotificationListener {
 
     @KafkaListener(topics = "user-notifications", groupId = "notification-group")
     public void listenNotifications(String message) {
-        sendEmail("pentex518@gmail.com", "Ticket Status Update", message);
+        // Split the string using the delimiter '|'
+        String[] parts = message.split("\\|");
+
+        // Retrieve email and UUID
+        String email = parts[0];
+        String uuid = parts[1];
+        String sendingMessage = String.format("Your ticket %s has been resolved!",uuid);
+        sendEmail(email, "Ticket Status Update", sendingMessage);
         
     }
 

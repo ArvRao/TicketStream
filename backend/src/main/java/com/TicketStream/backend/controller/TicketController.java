@@ -7,6 +7,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import com.TicketStream.backend.model.Ticket;
+import com.TicketStream.backend.response.ResponseMessage;
 import com.TicketStream.backend.service.TicketService;
 
 import java.util.List;
@@ -20,9 +21,12 @@ public class TicketController {
 
     // Endpoint to submit a new ticket
     @PostMapping("/submit")
-    public ResponseEntity<String> submitTicket(@Validated @RequestBody Ticket ticket) {
+    public ResponseEntity<ResponseMessage> submitTicket(@Validated @RequestBody Ticket ticket) {
         ticketService.processTicket(ticket);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Ticket has been submitted successfully!" + " Id:" + ticket.getUuid());
+        // return ResponseEntity.status(HttpStatus.CREATED).body(");
+        String successMessage = "Ticket has been submitted successfully!" + " Id:" + ticket.getUuid();
+        // Return as JSON
+        return ResponseEntity.ok(new ResponseMessage(successMessage));
     }
 
     // Endpoint to retrieve a ticket by ID
