@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.data.domain.Page;
 import com.TicketStream.backend.model.Ticket;
 import com.TicketStream.backend.response.ResponseMessage;
 import com.TicketStream.backend.service.TicketService;
@@ -42,8 +42,9 @@ public class TicketController {
 
     // Endpoint to retrieve all tickets
     @GetMapping
-    public ResponseEntity<List<Ticket>> getAllTickets() {
-        List<Ticket> tickets = ticketService.getAllTickets();
-        return ResponseEntity.ok(tickets);
+    public Page<Ticket> getAllTickets(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ticketService.getAllTickets(page, size);
     }
 }

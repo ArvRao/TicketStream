@@ -1,6 +1,9 @@
 package com.TicketStream.backend.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -94,7 +97,8 @@ public class TicketService {
     }
 
     // Method to retrieve all tickets
-    public List<Ticket> getAllTickets() {
-        return ticketRepository.findAll();
+    public Page<Ticket> getAllTickets(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ticketRepository.findAll(pageable);
     }
 }
